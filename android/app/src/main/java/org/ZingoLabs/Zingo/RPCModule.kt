@@ -21,13 +21,7 @@ class RPCModule internal constructor(private val reactContext: ReactApplicationC
     //    const val TAG = "RPCModule"
     //}
 
-    private external fun initlogging(): String
-    private external fun execute(cmd: String, args: String): String
-    private external fun initnew(serveruri: String, saplingOutputb64: String, saplingSpendb64: String, datadir: String): String
-    private external fun initfromseed(serveruri: String, seed: String, birthday: String, saplingOutputb64: String, saplingSpendb64: String, datadir: String): String
-    private external fun initfromb64(serveruri: String, datab64: String, saplingOutputb64: String, saplingSpendb64: String, datadir: String): String
-    private external fun save(): String
-    private external fun getlatestblock(serveruri: String): String
+
 
     override fun getName(): String {
         return "RPCModule"
@@ -129,10 +123,10 @@ class RPCModule internal constructor(private val reactContext: ReactApplicationC
 
         saplingOutput = ByteArray(0)
 
-        initlogging()
+        RustFFI.initlogging()
 
         // Create a seed
-        val seed = initnew(server,
+        val seed = RustFFI.initnew(server,
             saplingOutputEncoded.toString(),
             saplingSpendEncoded.toString(),
             reactContext.applicationContext.filesDir.absolutePath)
@@ -216,9 +210,9 @@ class RPCModule internal constructor(private val reactContext: ReactApplicationC
 
         saplingOutput = ByteArray(0)
 
-        initlogging()
+        RustFFI.initlogging()
 
-        val rseed = initfromseed(server, seed, birthday,
+        val rseed = RustFFI.initfromseed(server, seed, birthday,
             saplingOutputEncoded.toString(),
             saplingSpendEncoded.toString(),
             reactContext.applicationContext.filesDir.absolutePath)
@@ -355,9 +349,9 @@ class RPCModule internal constructor(private val reactContext: ReactApplicationC
 
         fileBytes = ByteArray(0)
 
-        initlogging()
+        RustFFI.initlogging()
 
-        val wseed = initfromb64(server,
+        val wseed = RustFFI.initfromb64(server,
             fileb64.toString(),
             saplingOutputEncoded.toString(),
             saplingSpendEncoded.toString(),
@@ -416,10 +410,10 @@ class RPCModule internal constructor(private val reactContext: ReactApplicationC
         // Run on a new thread so as to not block the UI
         thread {
 
-            initlogging()
+            RustFFI.initlogging()
 
             // Log.w("send", "Trying to send $sendJSON")
-            val result = execute("send", sendJSON)
+            val result = RustFFI.execute("send", sendJSON)
             // Log.w("send", "Send Result: $result")
 
             promise.resolve(result)
@@ -430,10 +424,10 @@ class RPCModule internal constructor(private val reactContext: ReactApplicationC
     fun execute(cmd: String, args: String, promise: Promise) {
         thread {
 
-            initlogging()
+            RustFFI.initlogging()
 
             // Log.w("execute", "Executing $cmd with $args")
-            val resp = execute(cmd, args)
+            val resp = RustFFI.execute(cmd, args)
             // Log.w("execute", "Response to $cmd : $resp")
 
             // And save it if it was a sync
@@ -461,7 +455,7 @@ class RPCModule internal constructor(private val reactContext: ReactApplicationC
 
     private fun saveWallet() {
         // Get the encoded wallet file
-        val b64encoded = save()
+        val b64encoded = RustFFI.save()
         // Log.w("MAIN", b64encoded)
 
         try {
@@ -503,10 +497,10 @@ class RPCModule internal constructor(private val reactContext: ReactApplicationC
     fun getLatestBlock(server: String, promise: Promise) {
         // Log.w("MAIN", "Initialize Light Client")
 
-        initlogging()
+        RustFFI.initlogging()
 
         // Initialize Light Client
-        val resp = getlatestblock(server)
+        val resp = RustFFI.getlatestblock(server)
 
         promise.resolve(resp)
     }

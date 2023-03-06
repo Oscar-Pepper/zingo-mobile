@@ -12,7 +12,10 @@ use jni::JNIEnv;
 use std::ffi::{CStr, CString};
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RPCModule_initlogging(env: JNIEnv, _: JObject) -> jstring {
+pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RustFFI_00024Companion_initlogging(
+    env: JNIEnv,
+    _: JObject,
+) -> jstring {
     android_logger::init_once(
         Config::default().with_min_level(Level::Trace).with_filter(
             FilterBuilder::new()
@@ -24,7 +27,7 @@ pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RPCModule_initlogging(env: JNI
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RPCModule_initnew(
+pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RustFFI_00024Companion_initnew(
     env: JNIEnv,
     _: JObject,
     j_serveruri: JString,
@@ -49,18 +52,21 @@ pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RPCModule_initnew(
     .into_string()
     .unwrap();
 
-    let data_dir = CString::from(CStr::from_ptr(env.get_string(j_data_dir).unwrap().as_ptr()))
-        .into_string()
-        .unwrap();
+    let data_dir = CString::from(CStr::from_ptr(
+        env.get_string(j_data_dir).unwrap().as_ptr(),
+    ))
+    .into_string()
+    .unwrap();
 
-    let seed = rustlib::init_new(server_uri, sapling_output, sapling_spend, data_dir);
+    let seed =
+        rustlib::init_new(server_uri, sapling_output, sapling_spend, data_dir);
 
     let output = env.new_string(seed.as_str()).unwrap();
     output.into_inner()
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RPCModule_initfromseed(
+pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RustFFI_00024Companion_initfromseed(
     env: JNIEnv,
     _: JObject,
     j_serveruri: JString,
@@ -76,15 +82,18 @@ pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RPCModule_initfromseed(
     .into_string()
     .unwrap();
 
-    let seed = CString::from(CStr::from_ptr(env.get_string(j_seed).unwrap().as_ptr()))
-        .into_string()
-        .unwrap();
+    let seed =
+        CString::from(CStr::from_ptr(env.get_string(j_seed).unwrap().as_ptr()))
+            .into_string()
+            .unwrap();
 
-    let birthday = CString::from(CStr::from_ptr(env.get_string(j_birthday).unwrap().as_ptr()))
-        .into_string()
-        .unwrap()
-        .parse::<u64>()
-        .unwrap();
+    let birthday = CString::from(CStr::from_ptr(
+        env.get_string(j_birthday).unwrap().as_ptr(),
+    ))
+    .into_string()
+    .unwrap()
+    .parse::<u64>()
+    .unwrap();
 
     let sapling_output = CString::from(CStr::from_ptr(
         env.get_string(j_sapling_output).unwrap().as_ptr(),
@@ -98,9 +107,11 @@ pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RPCModule_initfromseed(
     .into_string()
     .unwrap();
 
-    let data_dir = CString::from(CStr::from_ptr(env.get_string(j_data_dir).unwrap().as_ptr()))
-        .into_string()
-        .unwrap();
+    let data_dir = CString::from(CStr::from_ptr(
+        env.get_string(j_data_dir).unwrap().as_ptr(),
+    ))
+    .into_string()
+    .unwrap();
 
     let seed = rustlib::init_from_seed(
         server_uri,
@@ -116,7 +127,7 @@ pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RPCModule_initfromseed(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RPCModule_initfromb64(
+pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RustFFI_00024Companion_initfromb64(
     env: JNIEnv,
     _: JObject,
     j_serveruri: JString,
@@ -125,9 +136,11 @@ pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RPCModule_initfromb64(
     j_sapling_spend: JString,
     j_data_dir: JString,
 ) -> jstring {
-    let base64 = CString::from(CStr::from_ptr(env.get_string(j_base64).unwrap().as_ptr()))
-        .into_string()
-        .unwrap();
+    let base64 = CString::from(CStr::from_ptr(
+        env.get_string(j_base64).unwrap().as_ptr(),
+    ))
+    .into_string()
+    .unwrap();
 
     let server_uri = CString::from(CStr::from_ptr(
         env.get_string(j_serveruri).unwrap().as_ptr(),
@@ -146,37 +159,52 @@ pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RPCModule_initfromb64(
     .into_string()
     .unwrap();
 
-    let data_dir = CString::from(CStr::from_ptr(env.get_string(j_data_dir).unwrap().as_ptr()))
-        .into_string()
-        .unwrap();
+    let data_dir = CString::from(CStr::from_ptr(
+        env.get_string(j_data_dir).unwrap().as_ptr(),
+    ))
+    .into_string()
+    .unwrap();
 
-    let seed = rustlib::init_from_b64(server_uri, base64, sapling_output, sapling_spend, data_dir);
+    let seed = rustlib::init_from_b64(
+        server_uri,
+        base64,
+        sapling_output,
+        sapling_spend,
+        data_dir,
+    );
 
     let output = env.new_string(seed.as_str()).unwrap();
     output.into_inner()
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RPCModule_save(env: JNIEnv, _: JObject) -> jstring {
+pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RustFFI_00024Companion_save(
+    env: JNIEnv,
+    _: JObject,
+) -> jstring {
     let encoded = rustlib::save_to_b64();
     let output = env.new_string(encoded.as_str()).unwrap();
     output.into_inner()
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RPCModule_execute(
+pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RustFFI_00024Companion_execute(
     env: JNIEnv,
     _: JObject,
     j_command: JString,
     j_argslist: JString,
 ) -> jstring {
-    let cmd = CString::from(CStr::from_ptr(env.get_string(j_command).unwrap().as_ptr()))
-        .into_string()
-        .unwrap();
+    let cmd = CString::from(CStr::from_ptr(
+        env.get_string(j_command).unwrap().as_ptr(),
+    ))
+    .into_string()
+    .unwrap();
 
-    let args_list = CString::from(CStr::from_ptr(env.get_string(j_argslist).unwrap().as_ptr()))
-        .into_string()
-        .unwrap();
+    let args_list = CString::from(CStr::from_ptr(
+        env.get_string(j_argslist).unwrap().as_ptr(),
+    ))
+    .into_string()
+    .unwrap();
 
     let resp = rustlib::execute(cmd, args_list);
 
@@ -185,7 +213,7 @@ pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RPCModule_execute(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RPCModule_getlatestblock(
+pub unsafe extern "C" fn Java_org_ZingoLabs_Zingo_RustFFI_00024Companion_getlatestblock(
     env: JNIEnv,
     _: JObject,
     j_serveruri: JString,
