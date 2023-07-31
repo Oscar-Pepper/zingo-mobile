@@ -51,7 +51,6 @@ jobs:
           python3 \
           curl \
           automake \
-          libtinfo5 \
           ca-certificates \
           gcc \
           protobuf-compiler \
@@ -67,6 +66,11 @@ jobs:
         # python3-zmq \ python-yq?
         # zlib1g-dev \ zlib-ng?
         # bsdmainutils \ binutils?
+        # libtinfo5 \
+        #  libtiff ?
+        # libtins ?
+        # libosinfo ?
+        # libbinio ?
         # sudo update-ca-certificates
 
       - name: Checkout lightwalletd repository
